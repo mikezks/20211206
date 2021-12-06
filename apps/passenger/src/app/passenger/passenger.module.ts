@@ -37,3 +37,5 @@ const routes: Routes = [
   ]
 })
 export class PassengerModule { }
+
+export const moduleRef = PassengerModule;
