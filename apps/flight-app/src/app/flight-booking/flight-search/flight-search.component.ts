@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @angular-eslint/no-empty-lifecycle-method */
 import {Component, OnInit} from '@angular/core';
-import {FlightService} from '@flight-workspace/flight-lib';
+import {Flight, FlightService} from '@flight-workspace/flight-lib';
+import { Store } from '@ngrx/store';
+import { EMPTY, Observable } from 'rxjs';
+import * as fromFlightBooking from '../+state';
 /* import { flightBookingDeps } from '../flight-booking.standalone-module';
 import * as flightBookingDependencies from '../flight-booking.standalone-module'; */
 
@@ -19,10 +22,7 @@ export class FlightSearchComponent implements OnInit {
   from = 'Hamburg'; // in Germany
   to = 'Graz'; // in Austria
   urgent = false;
-
-  get flights() {
-    return this.flightService.flights;
-  }
+  flights$: Observable<Flight[]> = EMPTY;
 
   // "shopping basket" with selected flights
   basket: { [id: number]: boolean } = {
@@ -31,17 +31,24 @@ export class FlightSearchComponent implements OnInit {
   };
 
   constructor(
-    private flightService: FlightService) {
+    private flightService: FlightService,
+    private store: Store<fromFlightBooking.FlightBookingRootState>) {
   }
 
   ngOnInit() {
+    this.flights$ = this.store.select(state => state.flightBooking.flights);
   }
 
   search(): void {
     if (!this.from || !this.to) return;
 
     this.flightService
-      .load(this.from, this.to, this.urgent);
+      .find(this.from, this.to, this.urgent)
+      .subscribe(
+        flights => this.store.dispatch(
+          fromFlightBooking.flightsLoaded({ flights })
+        )
+      );
   }
 
   delay(): void {
