@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Type } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { PassengerComponent } from './passenger.component';
@@ -38,4 +38,15 @@ const routes: Routes = [
 })
 export class PassengerModule { }
 
+
+// Access the exposed module dynamically
+
+// ...through a const
 export const moduleRef = PassengerModule;
+
+// ...through a TS dictionary by using a string key
+const myDynModules: Record<string, Type<unknown>> = {
+  passenger: PassengerModule
+};
+
+myDynModules['passenger'];
