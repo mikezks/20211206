@@ -1,11 +1,12 @@
 import { Flight } from '@flight-workspace/flight-lib';
-import { Action, createReducer, on } from '@ngrx/store';
+import { createReducer, on } from '@ngrx/store';
 import * as FlightBookingActions from './flight-booking.actions';
 
 export const flightBookingFeatureKey = 'flightBooking';
 
 export interface State {
   flights: Flight[];
+  // filter: { from: string, to: string, urgent: boolean };
 }
 
 export const initialState: State = {
@@ -19,7 +20,7 @@ export interface FlightBookingRootState {
 export const reducer = createReducer(
   initialState,
 
-  on(FlightBookingActions.flightsLoaded, (state, action) => {
+  on(FlightBookingActions.flightsLoadedSuccess, (state, action) => {
     const flights = action.flights;
     return { ...state, flights };
   }),

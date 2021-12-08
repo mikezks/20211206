@@ -2,7 +2,7 @@
 /* eslint-disable @angular-eslint/no-empty-lifecycle-method */
 import {Component, OnInit} from '@angular/core';
 // import { provideRoutes } from '@angular/router';
-import {Flight, FlightService} from '@flight-workspace/flight-lib';
+import {Flight} from '@flight-workspace/flight-lib';
 import { Store } from '@ngrx/store';
 import { EMPTY, Observable } from 'rxjs';
 import * as fromFlightBooking from '../+state';
@@ -39,9 +39,7 @@ export class FlightSearchComponent implements OnInit {
     5: true
   };
 
-  constructor(
-    private flightService: FlightService,
-    private store: Store<fromFlightBooking.FlightBookingRootState>) {
+  constructor(private store: Store<fromFlightBooking.FlightBookingRootState>) {
   }
 
   ngOnInit() {
@@ -51,13 +49,13 @@ export class FlightSearchComponent implements OnInit {
   search(): void {
     if (!this.from || !this.to) return;
 
-    this.flightService
-      .find(this.from, this.to, this.urgent)
-      .subscribe(
-        flights => this.store.dispatch(
-          fromFlightBooking.flightsLoaded({ flights })
-        )
-      );
+    this.store.dispatch(
+      fromFlightBooking.flightsLoad({
+        from: this.from,
+        to: this.to,
+        urgent: this.urgent
+      })
+    );
   }
 
   delay(flight: Flight): void {
