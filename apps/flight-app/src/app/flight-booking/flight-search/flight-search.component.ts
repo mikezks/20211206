@@ -1,18 +1,27 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @angular-eslint/no-empty-lifecycle-method */
 import {Component, OnInit} from '@angular/core';
+// import { provideRoutes } from '@angular/router';
 import {Flight, FlightService} from '@flight-workspace/flight-lib';
 import { Store } from '@ngrx/store';
 import { EMPTY, Observable } from 'rxjs';
 import * as fromFlightBooking from '../+state';
 /* import { flightBookingDeps } from '../flight-booking.standalone-module';
-import * as flightBookingDependencies from '../flight-booking.standalone-module'; */
+import * as FligthBookingModule from '../flight-booking.standalone-module'; */
 
 @Component({
   selector: 'flight-search',
   /* standalone: true,
   imports: [
-    flightBookingDependencies
+    FlightBookingModule
+  ],
+  providers: [
+    provideRoutes([
+      {
+        path: 'flight-search',
+        component: FlightSearchComponent
+      }
+    ])
   ], */
   templateUrl: './flight-search.component.html',
   styleUrls: ['./flight-search.component.css']
@@ -51,8 +60,21 @@ export class FlightSearchComponent implements OnInit {
       );
   }
 
-  delay(): void {
-    this.flightService.delay();
+  delay(flight: Flight): void {
+    this.store.dispatch(
+      fromFlightBooking.flightUpdate({
+        flight: {
+          ...flight,
+          date: addMinutesToDate(flight.date, 15).toISOString(),
+          delayed: true
+        }
+      })
+    );
   }
-
 }
+
+export const addMinutesToDate = (date: Date | string, minutes: number): Date => {
+  const dateObj = date instanceof Date ? date : new Date(date);
+  return new Date(dateObj.getTime() + minutes * 60 * 1_000);
+};
+
