@@ -3,7 +3,7 @@
 import {Component, OnInit} from '@angular/core';
 // import { provideRoutes } from '@angular/router';
 import {Flight} from '@flight-workspace/flight-lib';
-import { Store } from '@ngrx/store';
+import { createSelector, Store } from '@ngrx/store';
 import { EMPTY, Observable } from 'rxjs';
 import * as fromFlightBooking from '../+state';
 /* import { flightBookingDeps } from '../flight-booking.standalone-module';
@@ -43,7 +43,18 @@ export class FlightSearchComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.flights$ = this.store.select(state => state.flightBooking.flights);
+    // DDD: View Model Selector with DDD-API concept and two isolated domains
+    /* const selectVmFlightSearch = createSelector(
+      fromFlightBooking.selectActiveUserFlights,
+      fromFlightBording.selectSomethingElse,
+      (booking, bording) => {
+
+      }
+    ) */
+
+    // this.flights$ = this.store.select(state => state.flightBooking.flights);
+    this.flights$ = this.store.select(fromFlightBooking.selectFlights);
+    // this.flights$ = this.store.select(fromFlightBooking.selectActiveUserFlights);
   }
 
   search(): void {
